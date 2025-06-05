@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMI Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2e86c1;
+            --secondary: #27ae60;
+            --light-bg: #f0f4f7;
+            --dark-text: #2c3e50;
+            --warning: #e74c3c;
+            --card-bg: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 25px 20px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .content {
+            padding: 30px;
+            background: var(--light-bg);
+        }
+
+        .form-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-text);
+            font-size: 1.05rem;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .input-container i {
+            width: 45px;
+            text-align: center;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            outline: none;
+            font-size: 1.05rem;
+            color: var(--dark-text);
+            background: transparent;
+        }
+
+        select {
+            cursor: pointer;
+            background: white;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 25px;
+            margin-top: 8px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .radio-option input[type="radio"] {
+            width: auto;
+            margin-right: 5px;
+            accent-color: var(--primary);
+        }
+
+        .warning {
+            color: var(--warning);
+            font-size: 0.9rem;
+            margin-top: 6px;
+            min-height: 20px;
+            padding-left: 5px;
+        }
+
+        .btn-calculate {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .btn-calculate:hover {
+            background: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .result-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 18px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: var(--dark-text);
+            font-size: 1.1rem;
+        }
+
+        .result-value {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+
+        .emi-highlight {
+            color: var(--secondary);
+            font-size: 1.4rem;
+        }
+
+        .info-text {
+            text-align: center;
+            margin-top: 25px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            color: #1976d2;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 600px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .form-container, .result-container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .radio-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .result-item {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        .result-item.highlight {
+            background: #e8f5e9;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px -10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-calculator"></i> EMI Calculator</h1>
+            <p>Calculate your monthly installments and plan your finances</p>
+        </div>
+        
+        <div class="content">
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="loanType">Loan Type</label>
+                    <div class="input-container">
+                        <i class="fas fa-home"></i>
+                        <select id="loanType">
+                            <option value="Personal Loan">Personal Loan</option>
+                            <option value="Home Loan">Home Loan</option>
+                            <option value="Property Loan">Property Loan</option>
+                            <option value="Business Loan">Business Loan</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Income Type</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="incomeType" value="Salaried" checked>
+                            Salaried
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="incomeType" value="SENP">
+                            Self-Employed Non-Professional (SENP)
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loanAmount">Requested Loan Amount (₹)</label>
+                    <div class="input-container">
+                        <i class="fas fa-rupee-sign"></i>
+                        <input type="number" id="loanAmount" placeholder="Enter loan amount">
+                    </div>
+                    <div class="warning" id="loanAmountWarning"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="monthlyIncome">Monthly Income (₹)</label>
+                    <div class="input-container">
+                        <i class="fas fa-wallet"></i>
+                        <input type="number" id="monthlyIncome" placeholder="Enter monthly income">
+                    </div>
+                    <div class="warning" id="monthlyIncomeWarning"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="age">Applicant Age (years)</label>
+                    <div class="input-container">
+                        <i class="fas fa-user"></i>
+                        <input type="number" id="age" placeholder="Enter your age">
+                    </div>
+                    <div class="warning" id="ageWarning"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="interestRate">Annual Interest Rate (%)</label>
+                    <div class="input-container">
+                        <i class="fas fa-percent"></i>
+                        <input type="number" step="0.1" id="interestRate" placeholder="Enter interest rate">
+                    </div>
+                    <div class="warning" id="interestRateWarning"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="tenure">Tenure (years)</label>
+                    <div class="input-container">
+                        <i class="fas fa-calendar-alt"></i>
+                        <input type="number" id="tenure" placeholder="Enter loan tenure">
+                    </div>
+                    <div class="warning" id="tenureWarning"></div>
+                </div>
+                
+                <button id="calculateBtn" class="btn-calculate">
+                    <i class="fas fa-calculator"></i> Calculate EMI
+                </button>
+            </div>
+            
+            <div class="result-container">
+                <div class="result-item highlight">
+                    <span class="result-label">Monthly EMI</span>
+                    <span class="result-value emi-highlight" id="monthlyEMI">₹ 0.00</span>
+                </div>
+                
+                <div class="result-item">
+                    <span class="result-label">Total Interest Payable</span>
+                    <span class="result-value" id="totalInterest">₹ 0.00</span>
+                </div>
+                
+                <div class="result-item">
+                    <span class="result-label">Total Payment (Principal + Interest)</span>
+                    <span class="result-value" id="totalPayment">₹ 0.00</span>
+                </div>
+            </div>
+            
+            <div class="info-text">
+                <i class="fas fa-info-circle"></i> Loan eligibility depends on multiple factors including credit score and financial history.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Loan criteria definitions
+        const loanCriteria = {
+            "Personal Loan":  [11.0, 30.0, 3, 7,    500000, 21, 55, 21, 70],
+            "Home Loan":      [8.2,  16.0, 5, 30, 2500000, 23, 50, 23, 60],
+            "Property Loan":  [9.0,  25.0, 5, 15, 2500000, 23, 50, 23, 60],
+            "Business Loan":  [17.0, 30.0, 3, 7,    500000, 25, 60, 25, 70]
+        };
+
+        // DOM Elements
+        const loanType = document.getElementById('loanType');
+        const incomeType = document.querySelectorAll('input[name="incomeType"]');
+        const loanAmount = document.getElementById('loanAmount');
+        const monthlyIncome = document.getElementById('monthlyIncome');
+        const age = document.getElementById('age');
+        const interestRate = document.getElementById('interestRate');
+        const tenure = document.getElementById('tenure');
+        const calculateBtn = document.getElementById('calculateBtn');
+
+        // Warning elements
+        const loanAmountWarning = document.getElementById('loanAmountWarning');
+        const monthlyIncomeWarning = document.getElementById('monthlyIncomeWarning');
+        const ageWarning = document.getElementById('ageWarning');
+        const interestRateWarning = document.getElementById('interestRateWarning');
+        const tenureWarning = document.getElementById('tenureWarning');
+
+        // Result elements
+        const monthlyEMI = document.getElementById('monthlyEMI');
+        const totalInterest = document.getElementById('totalInterest');
+        const totalPayment = document.getElementById('totalPayment');
+
+        // Set default values for inputs
+        function setDefaultValues() {
+            const loanTypeValue = loanType.value;
+            const criteria = loanCriteria[loanTypeValue];
+            
+            loanAmount.value = criteria[4] || '';
+            interestRate.value = ((criteria[0] + criteria[1]) / 2).toFixed(1);
+            tenure.value = Math.floor((criteria[2] + criteria[3]) / 2);
+            monthlyIncome.value = '';
+            age.value = '';
+        }
+
+        // Initialize with default values
+        setDefaultValues();
+
+        // Update criteria when loan type changes
+        loanType.addEventListener('change', function() {
+            setDefaultValues();
+            validateAll();
+        });
+
+        // Update validation when income type changes
+        incomeType.forEach(radio => {
+            radio.addEventListener('change', validateAge);
+        });
+
+        // Attach validation to inputs
+        loanAmount.addEventListener('input', validateLoanAmount);
+        monthlyIncome.addEventListener('input', validateMonthlyIncome);
+        age.addEventListener('input', validateAge);
+        interestRate.addEventListener('input', validateInterestRate);
+        tenure.addEventListener('input', validateTenure);
+
+        // Calculate button handler
+        calculateBtn.addEventListener('click', calculateEMI);
+
+        // Clear warnings
+        function clearWarnings() {
+            loanAmountWarning.textContent = '';
+            monthlyIncomeWarning.textContent = '';
+            ageWarning.textContent = '';
+            interestRateWarning.textContent = '';
+            tenureWarning.textContent = '';
+        }
+
+        // Validate all fields
+        function validateAll() {
+            validateLoanAmount();
+            validateMonthlyIncome();
+            validateAge();
+            validateInterestRate();
+            validateTenure();
+        }
+
+        // Validate loan amount
+        function validateLoanAmount() {
+            const value = loanAmount.value.trim();
+            loanAmountWarning.textContent = '';
+            
+            if (!value) return;
+            
+            const amount = parseFloat(value);
+            if (isNaN(amount)) {
+                loanAmountWarning.textContent = 'Enter a valid number';
+                return;
+            }
+            
+            const loanTypeValue = loanType.value;
+            const minAmount = loanCriteria[loanTypeValue][4];
+            
+            if (amount < minAmount) {
+                loanAmountWarning.textContent = `Minimum loan amount is ₹${minAmount.toLocaleString()}`;
+            }
+        }
+
+        // Validate monthly income
+        function validateMonthlyIncome() {
+            const value = monthlyIncome.value.trim();
+            monthlyIncomeWarning.textContent = '';
+            
+            if (!value) return;
+            
+            const income = parseFloat(value);
+            if (isNaN(income)) {
+                monthlyIncomeWarning.textContent = 'Enter a valid number';
+                return;
+            }
+            
+            if (income <= 0) {
+                monthlyIncomeWarning.textContent = 'Income must be greater than 0';
+            }
+        }
+
+        // Validate age
+        function validateAge() {
+            const value = age.value.trim();
+            ageWarning.textContent = '';
+            
+            if (!value) return;
+            
+            const ageValue = parseInt(value);
+            if (isNaN(ageValue)) {
+                ageWarning.textContent = 'Enter a valid age';
+                return;
+            }
+            
+            const loanTypeValue = loanType.value;
+            const criteria = loanCriteria[loanTypeValue];
+            const incomeTypeValue = document.querySelector('input[name="incomeType"]:checked').value;
+            
+            let minAge, maxAge;
+            if (incomeTypeValue === "Salaried") {
+                minAge = criteria[5];
+                maxAge = criteria[6];
+            } else {
+                minAge = criteria[7];
+                maxAge = criteria[8];
+            }
+            
+            if (ageValue < minAge || ageValue > maxAge) {
+                ageWarning.textContent = `Age must be between ${minAge} and ${maxAge} years`;
+                return;
+            }
+            
+            // Validate tenure with age
+            const tenureValue = tenure.value.trim();
+            if (tenureValue) {
+                const tenureInt = parseInt(tenureValue);
+                if (!isNaN(tenureInt)) {
+                    const closingAge = ageValue + tenureInt;
+                    if (incomeTypeValue === "Salaried" && closingAge > 60) {
+                        ageWarning.textContent = 'Closing age cannot exceed 60 years for salaried applicants';
+                    } else if (incomeTypeValue === "SENP" && closingAge > 70) {
+                        ageWarning.textContent = 'Closing age cannot exceed 70 years for SENP applicants';
+                    }
+                }
+            }
+        }
+
+        // Validate interest rate
+        function validateInterestRate() {
+            const value = interestRate.value.trim();
+            interestRateWarning.textContent = '';
+            
+            if (!value) return;
+            
+            const rate = parseFloat(value);
+            if (isNaN(rate)) {
+                interestRateWarning.textContent = 'Enter a valid rate';
+                return;
+            }
+            
+            const loanTypeValue = loanType.value;
+            const minRate = loanCriteria[loanTypeValue][0];
+            const maxRate = loanCriteria[loanTypeValue][1];
+            
+            if (rate < minRate || rate > maxRate) {
+                interestRateWarning.textContent = `Rate must be between ${minRate}% and ${maxRate}%`;
+            }
+        }
+
+        // Validate tenure
+        function validateTenure() {
+            const value = tenure.value.trim();
+            tenureWarning.textContent = '';
+            
+            if (!value) return;
+            
+            const tenureValue = parseInt(value);
+            if (isNaN(tenureValue)) {
+                tenureWarning.textContent = 'Enter a valid tenure';
+                return;
+            }
+            
+            const loanTypeValue = loanType.value;
+            const minTenure = loanCriteria[loanTypeValue][2];
+            const maxTenure = loanCriteria[loanTypeValue][3];
+            
+            if (tenureValue < minTenure || tenureValue > maxTenure) {
+                tenureWarning.textContent = `Tenure must be between ${minTenure} and ${maxTenure} years`;
+                return;
+            }
+            
+            // Validate age with tenure
+            const ageValue = age.value.trim();
+            if (ageValue) {
+                const ageInt = parseInt(ageValue);
+                if (!isNaN(ageInt)) {
+                    const incomeTypeValue = document.querySelector('input[name="incomeType"]:checked').value;
+                    const closingAge = ageInt + tenureValue;
+                    if (incomeTypeValue === "Salaried" && closingAge > 60) {
+                        tenureWarning.textContent = 'Closing age cannot exceed 60 years for salaried applicants';
+                    } else if (incomeTypeValue === "SENP" && closingAge > 70) {
+                        tenureWarning.textContent = 'Closing age cannot exceed 70 years for SENP applicants';
+                    }
+                }
+            }
+        }
+
+        // Calculate EMI
+        function calculateEMI() {
+            clearWarnings();
+            validateAll();
+            
+            // Check for any warnings
+            if ([loanAmountWarning, monthlyIncomeWarning, ageWarning, interestRateWarning, tenureWarning]
+                .some(el => el.textContent !== '')) {
+                return;
+            }
+            
+            // Get input values
+            const p = parseFloat(loanAmount.value);
+            const r = parseFloat(interestRate.value) / (12 * 100);
+            const n = parseInt(tenure.value) * 12;
+            
+            // Calculate EMI
+            let emi;
+            if (r > 0) {
+                emi = p * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+            } else {
+                emi = p / n;
+            }
+            
+            // Calculate total interest and payment
+            const total = emi * n;
+            const interest = total - p;
+            
+            // Update results
+            monthlyEMI.textContent = `₹ ${emi.toFixed(2)}`;
+            totalInterest.textContent = `₹ ${interest.toFixed(2)}`;
+            totalPayment.textContent = `₹ ${total.toFixed(2)}`;
+        }
+
+        // Initialize the calculator
+        validateAll();
+    </script>
+</body>
+</html>
